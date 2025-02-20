@@ -19,7 +19,7 @@ async function scrapePageByAI(options: ScrapperOptions, pageInfos: {
     messages: [
       {
         role: 'system',
-        content: 'You are an assistant that helps people find the information they need in an HTML document.',
+        content: 'You are a smart assistant that helps people find the information they need in an HTML document. Return the exact information that is requested in the schema, no more, no less. Pay attention to the schema and the schema descriptions.',
       },
       {
         role: 'user',
