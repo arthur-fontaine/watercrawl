@@ -9,5 +9,6 @@ export async function getPageInfos(url: string, browserOptions: BrowserOptions) 
   await page.goto(url, { waitUntil: 'domcontentloaded' });
 
   const html = await page.content();
+  await page.close();
   return { html, url };
 }
