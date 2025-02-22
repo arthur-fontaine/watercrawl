@@ -6,6 +6,7 @@ export function getOpenAIType(zodType: z.ZodType<any>): OpenAIStructuredOutputSc
   if (zodType instanceof z.ZodArray) return getOpenAIArraySchema(zodType);
   if (zodType instanceof z.ZodString) return getOpenAIStringSchema(zodType);
   if (zodType instanceof z.ZodNumber) return getOpenAINumberSchema(zodType);
+  if (zodType instanceof z.ZodEffects) return getOpenAIType(zodType._def.schema);
 
   throw new UnsupportedZodType(zodType);
 }
