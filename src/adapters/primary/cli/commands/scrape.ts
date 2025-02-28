@@ -16,13 +16,13 @@ export const scrapeCommand = createCommand('scrape')
     const schema = schemaModule.default as z.AnyZodObject
 
     const result = await scrapeURL(url, {
-      ai: new OpenAI({
+      ai: schemaModule.ai ?? new OpenAI({
         baseUrl: config.openai.baseUrl,
         apiKey: config.openai.apiKey,
         model: config.openai.model,
       }),
       schema: zodToOpenAIStructuredOutput(schema),
-      browser: new PuppeteerBrowser({
+      browser: schemaModule.browser ?? new PuppeteerBrowser({
         browserWSEndpoint: config.browser.browserWSEndpoint,
       }),
     })

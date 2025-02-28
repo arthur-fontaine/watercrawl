@@ -16,15 +16,15 @@ export const flowCommand = createCommand('flow')
 
     await flow({
       entryUrl: url,
-      ai: new OpenAI({
+      ai: flowModule.ai ?? new OpenAI({
         baseUrl: config.openai.baseUrl,
         apiKey: config.openai.apiKey,
         model: config.openai.model,
       }),
-      browser: new PuppeteerBrowser({
+      browser: flowModule.browser ?? new PuppeteerBrowser({
         browserWSEndpoint: config.browser.browserWSEndpoint,
       }),
-      queue: new BullQueue({
+      queue: flowModule.queue ?? new BullQueue({
         name: config.queue.name,
         redisHost: config.queue.redisHost,
         redisPort: config.queue.redisPort,
