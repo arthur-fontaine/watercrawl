@@ -1,8 +1,9 @@
 import { createCommand } from "commander";
-import { scrapeURL } from "../../scrapper";
-import { OpenAI } from "../../ai";
+import { scrapeURL } from "../../../../application/use-cases/scrap-url";
+import { OpenAI } from "../../../secondary/ai";
 import type { z } from "zod";
-import { zodToOpenAIStructuredOutput } from "../../zod-to-openai-structured-output";
+import { zodToOpenAIStructuredOutput } from "../../../../application/services/zod-to-openai-structured-output";
+import { PuppeteerBrowser } from "../../../secondary/browser";
 
 export const scrapeCommand = createCommand('scrape')
   .description('Scrape a website')
@@ -18,9 +19,9 @@ export const scrapeCommand = createCommand('scrape')
         model: Bun.env.OPENAI_MODEL ?? 'davinci',
       }),
       schema: zodToOpenAIStructuredOutput(schema),
-      browserOptions: {
+      browser: new PuppeteerBrowser({
         browserWSEndpoint: Bun.env.BROWSER_WS_ENDPOINT ?? 'ws://localhost:9222',
-      },
+      }),
     })
 
     process.stdout.write(JSON.stringify(result, null, 2))

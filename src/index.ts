@@ -1,3 +1,3 @@
 export { z } from "zod";
-export { scrapeURL } from "./scrapper";
-export { createFlow } from "./flow/create-flow";
+export { scrapeURL } from "./application/use-cases/scrap-url";
+export { createFlow } from "./application/services/create-flow";

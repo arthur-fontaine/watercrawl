@@ -1,4 +1,4 @@
-interface ScrapperOptions {
+export interface ScrapperOptions {
   ai: AI;
   schema: OpenAIStructuredOutput;
   browser: Browser;

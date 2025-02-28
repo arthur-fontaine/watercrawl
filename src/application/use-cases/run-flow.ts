@@ -1,10 +1,20 @@
 import type { z } from "zod";
 import Bull from "bull";
-import { scrapeURL } from "../scrapper";
-import { zodToOpenAIStructuredOutput } from "../zod-to-openai-structured-output";
-import type { FlowOptions } from "./flow";
+import { scrapeURL } from "./scrap-url";
+import { zodToOpenAIStructuredOutput } from "../services/zod-to-openai-structured-output";
 
-export async function flow<T extends z.AnyZodObject>(options: FlowOptions<T>) {
+export interface FlowOptions<T extends z.AnyZodObject> {
+  // scrap specific options
+  ai: AI;
+  schema: T;
+  browser: Browser;
+  // flow specific options
+  entryUrl: string;
+  then: (data: z.infer<T>, addToQueue: (...urls: string[]) => void) => void;
+  id?: string;
+}
+
+export async function runFlow<T extends z.AnyZodObject>(options: FlowOptions<T>) {
   const queue = new Bull<{
     url: string;
     retryRemaining?: number;

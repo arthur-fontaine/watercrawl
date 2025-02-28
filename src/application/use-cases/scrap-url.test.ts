@@ -1,7 +1,8 @@
 import { test, expect, beforeAll, afterAll } from 'bun:test'
 import puppeteer, { type Browser } from 'puppeteer'
-import { scrapeURL } from '.'
-import { OpenAI } from '../ai'
+import { scrapeURL } from './scrap-url'
+import { OpenAI } from '../../adapters/secondary/ai'
+import { PuppeteerBrowser } from '../../adapters/secondary/browser'
 
 let browser: Browser
 
@@ -20,9 +21,9 @@ test('scrapping', async () => {
       apiKey: Bun.env.OPENROUTER_API_KEY,
       baseUrl: 'https://openrouter.ai/api'
     }),
-    browserOptions: {
+    browser: new PuppeteerBrowser({
       browserWSEndpoint: browser.wsEndpoint(),
-    },
+    }),
     schema: {
       type: 'json_schema',
       json_schema: {
