@@ -4,28 +4,21 @@ import { scrapeURL } from "../scrapper";
 import { zodToOpenAIStructuredOutput } from "../zod-to-openai-structured-output";
 import type { FlowOptions } from "./flow";
 
-export async function flow<T extends z.AnyZodObject>({
-  id,
-  schema,
-  ai,
-  entryUrl,
-  browserOptions,
-  then,
-}: FlowOptions<T>) {
+export async function flow<T extends z.AnyZodObject>(options: FlowOptions<T>) {
   const queue = new Bull<{
     url: string;
     retryRemaining?: number;
-  }>(id || `flow-${Date.now()}`, 'redis://127.0.0.1:6379');
+  }>(options.id || `flow-${Date.now()}`, 'redis://127.0.0.1:6379');
 
   queue.process(async (job) => {
     const url = job.data.url;
     const data = await scrapeURL(url, {
-      ai,
-      browserOptions,
-      schema: zodToOpenAIStructuredOutput(schema),
+      ai: options.ai,
+      browser: options.browser,
+      schema: zodToOpenAIStructuredOutput(options.schema),
     });
-    const parsed = schema.parse(data);
-    then(parsed, (...urls) => {
+    const parsed = options.schema.parse(data);
+    options.then(parsed, (...urls) => {
       urls.forEach((url) => queue.add({ url }));
     });
   });
@@ -45,5 +38,5 @@ export async function flow<T extends z.AnyZodObject>({
     });
   });
 
-  queue.add({ url: entryUrl });
+  queue.add({ url: options.entryUrl });
 }

@@ -1,14 +1,12 @@
-import { getPageInfos } from "./page-infos";
-
 interface ScrapperOptions {
   ai: AI;
   schema: OpenAIStructuredOutput;
-  browserOptions: BrowserOptions;
+  browser: Browser;
 }
 
 export async function scrapeURL(url: string, options: ScrapperOptions) {
-  const pageInfos = await getPageInfos(url, options.browserOptions)
-  return await scrapePageByAI(options, pageInfos)
+  const pageInfos = await options.browser.getPageInfos(url);
+  return await scrapePageByAI(options, pageInfos);
 }
 
 async function scrapePageByAI(options: ScrapperOptions, pageInfos: {
