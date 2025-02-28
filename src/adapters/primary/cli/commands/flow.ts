@@ -8,10 +8,11 @@ import { loadConfig } from "../../../../config";
 export const flowCommand = createCommand('flow')
   .description('Run a flow')
   .argument('<url>', 'The entry URL')
-  .action(async (url) => {
+  .option('-f, --flow <flow>', 'The flow file')
+  .action(async (url, { flow: flowFile }) => {
     const config = loadConfig()
     
-    const flowModule = await import(process.cwd() + '/flow.ts')
+    const flowModule = await import(`${process.cwd()}/${flowFile}`)
     const flow = flowModule.default as ReturnType<typeof createFlow>
 
     await flow({

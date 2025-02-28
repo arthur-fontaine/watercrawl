@@ -9,10 +9,11 @@ import { loadConfig } from "../../../../config";
 export const scrapeCommand = createCommand('scrape')
   .description('Scrape a website')
   .argument('<url>', 'The URL to scrape')
-  .action(async (url) => {
+  .option('-s, --schema <schema>', 'The schema file', 'schema.ts')
+  .action(async (url, { schema: schemaFile }) => {
     const config = loadConfig()
 
-    const schemaModule = await import(process.cwd() + '/schema.ts')
+    const schemaModule = await import(`${process.cwd()}/${schemaFile}`)
     const schema = schemaModule.default as z.AnyZodObject
 
     const result = await scrapeURL(url, {
