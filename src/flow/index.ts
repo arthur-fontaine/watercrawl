@@ -14,6 +14,7 @@ export async function flow<T extends z.AnyZodObject>({
 }: FlowOptions<T>) {
   const queue = new Bull<{
     url: string;
+    retryRemaining?: number;
   }>(id || `flow-${Date.now()}`, 'redis://127.0.0.1:6379');
 
   queue.process(async (job) => {
@@ -31,6 +32,17 @@ export async function flow<T extends z.AnyZodObject>({
 
   queue.on('failed', (job, error) => {
     console.error(`Job ${job.id} failed: ${error.message}`);
+  });
+
+  queue.on('failed', (job, error) => {
+    if (job.data.retryRemaining === 0) {
+      console.error(`Job ${job.id} failed and no more retries left: ${error.message}`);
+      return;
+    }
+    queue.add({
+      url: job.data.url,
+      retryRemaining: job.data.retryRemaining ? job.data.retryRemaining - 1 : 3,
+    });
   });
 
   queue.add({ url: entryUrl });
