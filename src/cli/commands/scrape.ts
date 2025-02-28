@@ -7,7 +7,7 @@ import { zodToOpenAIStructuredOutput } from "../../zod-to-openai-structured-outp
 export const scrapeCommand = createCommand('scrape')
   .description('Scrape a website')
   .argument('<url>', 'The URL to scrape')
-  .action(async (url: string) => {
+  .action(async (url) => {
     const schemaModule = await import(process.cwd() + '/schema.ts')
     const schema = schemaModule.default as z.AnyZodObject
 
