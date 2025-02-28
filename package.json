@@ -2,6 +2,12 @@
   "name": "watercrawl",
   "module": "src/index.ts",
   "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./browsers": "./src/adapters/secondary/browser/index.ts",
+    "./ais": "./src/adapters/secondary/ai/index.ts",
+    "./queues": "./src/adapters/secondary/queue/index.ts"
+  },
   "devDependencies": {
     "@types/bun": "latest",
     "puppeteer": "^24.2.1"
