@@ -81,9 +81,11 @@ Crawl and scrape a website with Watercrawl in **<u>5 minutes</u>**!
 - [FetchBrowser](/src/adapters/secondary/browser/fetch.ts): Fetches the page using `fetch`.
 
   ```ts
+  // flow.ts
+
   import { FetchBrowser } from "watercrawl/browsers"
 
-  const browser = new FetchBrowser({
+  export const browser = new FetchBrowser({
     /* optional */
     requestOptions: {
       headers: {
@@ -96,9 +98,11 @@ Crawl and scrape a website with Watercrawl in **<u>5 minutes</u>**!
 - [PuppeteerBrowser](/src/adapters/secondary/browser/puppeteer.ts): Fetches the page using [Puppeteer](https://pptr.dev/).
   
   ```ts
+  // flow.ts
+
   import { PuppeteerBrowser } from "watercrawl/browsers"
 
-  const browser = new PuppeteerBrowser({
+  export const browser = new PuppeteerBrowser({
     /* required */
     browserWSEndpoint: 'ws://localhost:3000',
   })
@@ -145,9 +149,11 @@ Crawl and scrape a website with Watercrawl in **<u>5 minutes</u>**!
 - [HappyDomBrowser](/src/adapters/secondary/browser/happy-dom.ts): Fetches the page using `fetch` and parses the HTML using [Happy DOM](https://github.com/capricorn86/happy-dom).
 
   ```ts
+  // flow.ts
+
   import { HappyDomBrowser } from "watercrawl/browsers"
 
-  const browser = new HappyDomBrowser({
+  export const browser = new HappyDomBrowser({
     /* required */
     selectors: ['html'],
 
@@ -165,10 +171,12 @@ Crawl and scrape a website with Watercrawl in **<u>5 minutes</u>**!
 - [OpenAI](/src/adapters/secondary/ai/openai.ts): Uses the OpenAI API to generate text.
 
   ```ts
+  // flow.ts
+
   import { OpenAI } from "watercrawl/ais"
 
   // Use any OpenAI compatible API
-  const ai = new OpenAI({
+  export const ai = new OpenAI({
     /* required */
     model: 'YOUR_MODEL',
     baseUrl: 'YOUR_BASE_URL',
@@ -182,9 +190,11 @@ Crawl and scrape a website with Watercrawl in **<u>5 minutes</u>**!
 - [BullQueue](/src/adapters/secondary/queue/bull.ts): Uses [Bull](https://github.com/OptimalBits/bull) as the queue.
 
   ```ts
+  // flow.ts
+
   import { BullQueue } from "watercrawl/queues"
 
-  const queue = new BullQueue({
+  export const queue = new BullQueue({
     /* required */
     name: 'YOUR_QUEUE_NAME',
     redis: {
@@ -203,9 +213,11 @@ Crawl and scrape a website with Watercrawl in **<u>5 minutes</u>**!
 - [JsQueue](/src/adapters/secondary/queue/jsqueue.ts): Uses an in-memory queue.
 
   ```ts
+  // flow.ts
+
   import { JsQueue } from "watercrawl/queues"
 
-  const queue = new JsQueue({
+  export const queue = new JsQueue({
     /* required */
     concurrency: 5,
   })
@@ -221,6 +233,8 @@ Crawl and scrape a website with Watercrawl in **<u>5 minutes</u>**!
   export class MyBrowser implements Browser {
     // Implement the methods
   }
+
+  // Then, instantiate it in your flow file and export it as `browser`
   ```
 
 - [AI](/src/domain/ports/ai.d.ts)
@@ -231,6 +245,8 @@ Crawl and scrape a website with Watercrawl in **<u>5 minutes</u>**!
   export class MyAI implements AI {
     // Implement the methods
   }
+
+  // Then, instantiate it in your flow file and export it as `ai`
   ```
 
 - [Queue](/src/domain/ports/queue.d.ts)
@@ -241,6 +257,8 @@ Crawl and scrape a website with Watercrawl in **<u>5 minutes</u>**!
   export class MyQueue<T> implements Queue<T> {
     // Implement the methods
   }
+
+  // Then, instantiate it in your flow file and export it as `queue`
   ```
 
 ## 💡 Tips
