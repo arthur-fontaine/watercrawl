@@ -26,7 +26,7 @@ export class JsQueue<T> implements Queue<T> {
   }
 
   async #worker(handler: (data: T) => Promise<void>): Promise<void> {
-    while (this.#queue.length > 0) {
+    while (true) {
       const data = this.#queue.shift();
       if (data) {
         try {
@@ -41,6 +41,7 @@ export class JsQueue<T> implements Queue<T> {
           });
         }
       }
+      await new Promise((resolve) => setTimeout(resolve, 0)); // prevent blocking the event loop
     }
   }
 
