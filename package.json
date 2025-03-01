@@ -23,6 +23,7 @@
     "@commander-js/extra-typings": "^13.1.0",
     "bull": "^4.16.5",
     "commander": "^13.1.0",
+    "happy-dom": "^17.1.8",
     "puppeteer-core": "^24.2.1",
     "zod": "^3.24.2"
   }
