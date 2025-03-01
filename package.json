@@ -6,6 +6,7 @@
   "bin": {
     "watercrawl": "./src/adapters/primary/cli/index.ts"
   },
+  "files": ["src"],
   "exports": {
     ".": "./src/index.ts",
     "./browsers": "./src/adapters/secondary/browser/index.ts",
