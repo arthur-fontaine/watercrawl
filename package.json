@@ -1,7 +1,11 @@
 {
   "name": "watercrawl",
+  "version": "0.0.3",
   "module": "src/index.ts",
   "type": "module",
+  "bin": {
+    "watercrawl": "./src/adapters/primary/cli/index.ts"
+  },
   "exports": {
     ".": "./src/index.ts",
     "./browsers": "./src/adapters/secondary/browser/index.ts",
