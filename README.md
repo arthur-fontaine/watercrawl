@@ -69,7 +69,7 @@ Crawl and scrape a website with Watercrawl in **<u>5 minutes</u>**!
     docker run -p 6379:6379 -d redis
 
     # Run the flow
-    watercrawl flow YOUR_URL
+    watercrawl flow YOUR_ENTRYPOINT_URL
     ```
 
 4. Check the results in `results.jsonl` or in the dashboard at `http://localhost:3000/ui`.
