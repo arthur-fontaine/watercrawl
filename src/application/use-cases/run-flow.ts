@@ -8,7 +8,7 @@ export interface FlowOptions<T extends z.AnyZodObject> {
   schema: T;
   browser: Browser;
   // flow specific options
-  queue: Queue<z.infer<T>>;
+  queue: Queue<{ url: string; retryRemaining?: number }>;
   entryUrl: string;
   then: (data: z.infer<T>, addToQueue: (...urls: string[]) => void) => void;
   id?: string;
@@ -16,7 +16,7 @@ export interface FlowOptions<T extends z.AnyZodObject> {
 
 export async function runFlow<T extends z.AnyZodObject>(options: FlowOptions<T>) {
   options.queue.process(async (job) => {
-    const url = job.data.url;
+    const url = job.url;
     const data = await scrapeURL(url, {
       ai: options.ai,
       browser: options.browser,
@@ -29,17 +29,17 @@ export async function runFlow<T extends z.AnyZodObject>(options: FlowOptions<T>)
   });
 
   options.queue.onFailed((job, error) => {
-    console.error(`Job ${job.id} failed: ${error.message}`);
+    console.error(`Job ${job.url} failed: ${error.message}`);
   });
 
   options.queue.onFailed((job, error) => {
-    if (job.data.retryRemaining === 0) {
-      console.error(`Job ${job.id} failed and no more retries left: ${error.message}`);
+    if (job.retryRemaining === 0) {
+      console.error(`Job ${job.url} failed and no more retries left: ${error.message}`);
       return;
     }
     options.queue.add({
-      url: job.data.url,
-      retryRemaining: job.data.retryRemaining ? job.data.retryRemaining - 1 : 3,
+      url: job.url,
+      retryRemaining: job.retryRemaining ? job.retryRemaining - 1 : 3,
     });
   });
 
