@@ -40,11 +40,25 @@ Crawl and scrape a website with Watercrawl in **<u>5 minutes</u>**!
       },
     })
     export const browser = new FetchBrowser()
-    export const ai = new OpenAI({
-      model: 'google/gemini-2.0-pro-exp-02-05:free',
-      apiKey: Bun.env.OPENAI_API_KEY, // In Bun, .env files are automatically loaded
-      baseUrl: 'https://openrouter.ai/api/v1'
-    })
+    export const ai = new MultiAI([
+      new OpenAI({
+        model: 'google/gemini-2.0-pro-exp-02-05:free',
+        apiKey: Bun.env.OPENROUTER_API_KEY, // In Bun, .env files are automatically loaded
+        baseUrl: 'https://openrouter.ai/api/v1'
+      }),
+      // If the above AI fails, try this AI
+      new OpenAI({
+        model: 'gemini-2.0-pro-exp',
+        apiKey: Bun.env.GEMINI_API_KEY,
+        baseUrl: 'https://generativelanguage.googleapis.com/v1beta/openai'
+      }),
+      // If the above AI fails, try this AI
+      new OpenAI({
+        model: 'gemini-2.0-flash',
+        apiKey: Bun.env.GEMINI_API_KEY,
+        baseUrl: 'https://generativelanguage.googleapis.com/v1beta/openai'
+      }),
+    ])
 
     export default createFlow({
       schema: z.object({
@@ -60,7 +74,7 @@ Crawl and scrape a website with Watercrawl in **<u>5 minutes</u>**!
     ```
 
     > [!NOTE]
-    > This example uses [OpenRouter](https://openrouter.ai/) as it provides an OpenAI compatible API to use free models. You can use any other OpenAI compatible API like OpenAI itself, [Ollama](https://ollama.com/), etc.
+    > You can use any OpenAI compatible API like OpenAI itself, [Ollama](https://ollama.com/), [Google AI Studio](https://aistudio.google.com/), [OpenRouter](https://openrouter.ai/), etc.
 
 3. Run the flow.
 
@@ -192,23 +206,20 @@ Crawl and scrape a website with Watercrawl in **<u>5 minutes</u>**!
 
   import { MultiAI } from "watercrawl/ais"
 
-  export const ai = new MultiAI({
-    /* required */
-    ais: [
-      // try this AI first
-      new OpenAI({
-        model: 'YOUR_MODEL_1',
-        baseUrl: 'YOUR_BASE_URL_1',
-        apiKey: 'YOUR_API_KEY_1',
-      }),
-      // if the above AI fails, try this AI
-      new OpenAI({
-        model: 'YOUR_MODEL_2',
-        baseUrl: 'YOUR_BASE_URL_2',
-        apiKey: 'YOUR_API_KEY_2',
-      }),
-    ],
-  })
+  export const ai = new MultiAI([
+    // try this AI first
+    new OpenAI({
+      model: 'YOUR_MODEL_1',
+      baseUrl: 'YOUR_BASE_URL_1',
+      apiKey: 'YOUR_API_KEY_1',
+    }),
+    // if the above AI fails, try this AI
+    new OpenAI({
+      model: 'YOUR_MODEL_2',
+      baseUrl: 'YOUR_BASE_URL_2',
+      apiKey: 'YOUR_API_KEY_2',
+    }),
+  ])
   ```
 
 ### ⏳ Queues
