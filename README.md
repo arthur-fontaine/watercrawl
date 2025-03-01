@@ -265,6 +265,6 @@ Crawl and scrape a website with Watercrawl in **<u>5 minutes</u>**!
 
 - Add `.describe('A description')` to your schema properties. This will help AI models understand what information it should get from the page.
 - Gemini models seem to be ideal as they can take big inputs. You can use [OpenRouter](https://openrouter.ai/) to use them for free (as of 1st March 2025).
-- Make sure the model you're using supports `response_format` and `structured_outputs`. You can use [OpenRouter](https://openrouter.ai/) to filter models that support these.
+- Make sure the model you're using supports `response_format` and `structured_outputs`. You can use the Models page on [OpenRouter](https://openrouter.ai/models) to filter models that support these.
 - Use `HappyDomBrowser` to pre-select the elements you want to scrape. You can reduce the input size for the AI by doing this.
 - If the website is static, you probably want to use `FetchBrowser` or `HappyDomBrowser`. If it's dynamic, you probably want to use `PuppeteerBrowser`.
