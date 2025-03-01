@@ -6,9 +6,9 @@
   <strong>Watercrawl</strong> is an AI-powered web crawler/scraper designed to be <u>simple</u> and to be used with the tools <u>YOU</u> want to use.
 </p>
 
-## 🚀 Quick start
+## 🚀 Quick start in 5 minutes!
 
-Crawl and scrape a website with Watercrawl in **<u>5 minutes</u>**!
+With Watercrawl, you can start crawling and scraping a website in just **<u>few minutes</u>**!
 
 1. Install Watercrawl.
 
