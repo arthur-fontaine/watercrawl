@@ -8,7 +8,7 @@
 
 ## 🚀 Quick start
 
-**Scrape a website with Watercrawl in 5 minutes!**
+Crawl and scrape a website with Watercrawl in **<u>5 minutes</u>**!
 
 1. Install Watercrawl.
 
