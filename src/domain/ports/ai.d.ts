@@ -31,10 +31,23 @@ interface AiCompletionParams {
   stream?: boolean;
 }
 
-interface AiCompletionResponse {
+type AiCompletionResponse =
+  | AiCompletionSuccessResponse
+  | AiCompletionErrorResponse
+
+interface AiCompletionSuccessResponse {
   choices: {
     message: {
       content: string;
     }
   }[]
+  error?: never;
+}
+
+interface AiCompletionErrorResponse {
+  error: {
+    message: string;
+    code: number;
+  }
+  choices?: never;
 }

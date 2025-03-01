@@ -6,7 +6,9 @@ export class OpenAI implements AI {
   }
 
   async completions(params: AiCompletionParams): Promise<AiCompletionResponse> {
-    const response = await fetch(`${this.#options.baseUrl}/v1/chat/completions`, {
+    const url = `${this.#options.baseUrl}/v1/chat/completions`;
+
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -24,6 +26,12 @@ export class OpenAI implements AI {
       throw new Error(`Failed to fetch: ${response.statusText} ${await response.text()}`)
     }
 
-    return await response.json()
+    const json = await response.json() as AiCompletionResponse;
+
+    if (json.error !== undefined) {
+      throw new Error(`Failed to fetch ${url}: ${json.error.message}`);
+    }
+
+    return json;
   }
 }

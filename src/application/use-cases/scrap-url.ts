@@ -35,12 +35,10 @@ async function scrapePageByAI(options: ScrapperOptions, pageInfos: {
       stream: false,
     });
 
-    if (response.choices) {
-      break;
+    if (response.choices !== undefined) {
+      return JSON.parse(response.choices[0].message.content);
     }
 
     retries--;
   } while (retries > 0);
-
-  return JSON.parse(response.choices[0].message.content)
 }

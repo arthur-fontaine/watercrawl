@@ -8,7 +8,7 @@ test('JsQueue', async () => {
   await jsQueue.add('https://example.com');
 
   let url = '';
-  await jsQueue.process(async (data) => {
+  jsQueue.process(async (data) => {
     url = data;
   });
 
@@ -32,7 +32,7 @@ test('JsQueue with multiple jobs', async () => {
   expect(urls).toEqual([]);
   await setTimeout(101);
   expect(urls).toEqual(['https://example.com']);
-  await setTimeout(100);
+  await setTimeout(101);
   expect(urls).toEqual(['https://example.com', 'https://example.org']);
 });
 
@@ -54,4 +54,23 @@ test('JsQueue with concurrency', async () => {
   expect(urls).toEqual([]);
   await setTimeout(2); // at 101ms (99ms + 2ms), the jobs should finish and the URLs should be pushed
   expect(urls).toEqual(['https://example.com', 'https://example.org']);
+});
+
+test('JsQueue with failure handler', async () => {
+  const jsQueue = new JsQueue<string>();
+
+  await jsQueue.add('https://example.com');
+
+  const errors: Error[] = [];
+  jsQueue.onFailed((data, error) => {
+    errors.push(error);
+  });
+
+  jsQueue.process(async (data) => {
+    throw new Error('Failed to process');
+  });
+
+  await setTimeout(0); // wait for the jobs to finish
+  expect(errors.length).toBe(1);
+  expect(errors[0].message).toBe('Failed to process');
 });
