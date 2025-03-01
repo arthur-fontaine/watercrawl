@@ -8,7 +8,7 @@ import { loadConfig } from "../../../../config";
 export const flowCommand = createCommand('flow')
   .description('Run a flow')
   .argument('<url>', 'The entry URL')
-  .option('-f, --flow <flow>', 'The flow file')
+  .option('-f, --flow <flow>', 'The flow file', 'flow.ts')
   .action(async (url, { flow: flowFile }) => {
     const config = loadConfig()
     
