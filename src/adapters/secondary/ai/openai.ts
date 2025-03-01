@@ -6,7 +6,7 @@ export class OpenAI implements AI {
   }
 
   async completions(params: AiCompletionParams): Promise<AiCompletionResponse> {
-    const url = `${this.#options.baseUrl}/v1/chat/completions`;
+    const url = `${this.#options.baseUrl}/chat/completions`;
 
     const response = await fetch(url, {
       method: 'POST',

@@ -43,7 +43,7 @@ Crawl and scrape a website with Watercrawl in **<u>5 minutes</u>**!
     export const ai = new OpenAI({
       model: 'google/gemini-2.0-pro-exp-02-05:free',
       apiKey: Bun.env.OPENAI_API_KEY, // In Bun, .env files are automatically loaded
-      baseUrl: 'https://openrouter.ai/api'
+      baseUrl: 'https://openrouter.ai/api/v1'
     })
 
     export default createFlow({
@@ -185,6 +185,32 @@ Crawl and scrape a website with Watercrawl in **<u>5 minutes</u>**!
   })
   ```
 
+- [MultiAI](/src/adapters/secondary/ai/multi.ts): If an AI fails, it retries with another AI.
+
+  ```ts
+  // flow.ts
+
+  import { MultiAI } from "watercrawl/ais"
+
+  export const ai = new MultiAI({
+    /* required */
+    ais: [
+      // try this AI first
+      new OpenAI({
+        model: 'YOUR_MODEL_1',
+        baseUrl: 'YOUR_BASE_URL_1',
+        apiKey: 'YOUR_API_KEY_1',
+      }),
+      // if the above AI fails, try this AI
+      new OpenAI({
+        model: 'YOUR_MODEL_2',
+        baseUrl: 'YOUR_BASE_URL_2',
+        apiKey: 'YOUR_API_KEY_2',
+      }),
+    ],
+  })
+  ```
+
 ### ⏳ Queues
 
 - [BullQueue](/src/adapters/secondary/queue/bull.ts): Uses [Bull](https://github.com/OptimalBits/bull) as the queue.
@@ -268,3 +294,7 @@ Crawl and scrape a website with Watercrawl in **<u>5 minutes</u>**!
 - Make sure the model you're using supports `response_format` and `structured_outputs`. You can use the Models page on [OpenRouter](https://openrouter.ai/models) to filter models that support these.
 - Use `HappyDomBrowser` to pre-select the elements you want to scrape. You can reduce the input size for the AI by doing this.
 - If the website is static, you probably want to use `FetchBrowser` or `HappyDomBrowser`. If it's dynamic, you probably want to use `PuppeteerBrowser`.
+- You can combine multiple AIs using `MultiAI` to prevent quota limits. Personally, I use:
+  - OpenRouter which is limited to 200 free requests per day.
+  - Google AI Studio which has different limits according to the model used. (i.e., 50 free requests per day for `google/gemini-2.0-pro-exp` and 1500 free requests per day for `google/gemini-2.0-flash` as of 1st March 2025). You can get an API key for free at <https://aistudio.google.com/apikey>. Their API is compatible with OpenAI (see [OpenAI compatibility](https://ai.google.dev/gemini-api/docs/openai#rest)), so you can use `https://generativelanguage.googleapis.com/v1beta/openai` as the base URL.
+  - Fallback to local Ollama (which is slower according to your computer's performance) if all the above fail.

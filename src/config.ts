@@ -1,7 +1,7 @@
 export function loadConfig() {
   return {
     openai: {
-      baseUrl: Bun.env.OPENAI_BASE_URL ?? 'https://api.openai.com',
+      baseUrl: Bun.env.OPENAI_BASE_URL ?? 'https://api.openai.com/v1',
       apiKey: Bun.env.OPENAI_API_KEY,
       model: Bun.env.OPENAI_MODEL ?? 'davinci',
     },

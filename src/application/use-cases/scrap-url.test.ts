@@ -19,7 +19,7 @@ test('scrapping', async () => {
     ai: new OpenAI({
       model: 'google/gemini-2.0-flash-lite-preview-02-05:free',
       apiKey: Bun.env.OPENROUTER_API_KEY,
-      baseUrl: 'https://openrouter.ai/api'
+      baseUrl: 'https://openrouter.ai/api/v1'
     }),
     browser: new PuppeteerBrowser({
       browserWSEndpoint: browser.wsEndpoint(),
