@@ -7,14 +7,36 @@ import { BullAdapter } from "@bull-board/api/bullAdapter";
 import { serve } from "bun";
 
 interface BullQueueOptions {
+  /**
+   * Queue name
+   * @example "my-queue"
+   */
   name: string;
+  /**
+   * Redis connection options
+   * @example { host: 'localhost', port: 6379 }
+   */
   redis: {
     host: string;
     port: number;
   };
+  /**
+   * Number of concurrent jobs
+   * @example 5
+   * @default 1
+   */
   concurrency?: number;
+  /**
+   * Dashboard options
+   * @example { enable: true, port: 3000 }
+   * @default undefined
+   */
   dashboard?: {
     enable: true;
+    /**
+     * The port the dashboard will be accessible at
+     * @example 3000
+     */
     port: number;
   };
 }

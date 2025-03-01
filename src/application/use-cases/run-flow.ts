@@ -9,8 +9,18 @@ export interface FlowOptions<T extends z.AnyZodObject> {
   browser: Browser;
   // flow specific options
   queue: Queue<{ url: string; retryRemaining?: number }>;
+  /**
+   * URL to start the flow
+   * @example "https://example.com"
+   */
   entryUrl: string;
+  /**
+   * Function to run after scraping the URL. Use this function to save the data to a database and add more URLs to the queue.
+   */
   then: (data: z.infer<T>, addToQueue: (...urls: string[]) => void) => void;
+  /**
+   * Unique identifier for the flow
+   */
   id?: string;
 }
 

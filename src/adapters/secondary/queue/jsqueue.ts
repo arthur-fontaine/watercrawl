@@ -1,4 +1,9 @@
 interface JsQueueOptions {
+  /**
+   * Number of concurrent jobs
+   * @example 5
+   * @default 1
+   */
   concurrency: number;
 }
 

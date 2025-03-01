@@ -2,7 +2,15 @@ import { Window } from "happy-dom";
 import { FetchBrowser } from "./fetch";
 
 interface HappyDomOptions {
+  /**
+   * CSS selectors to extract from the page
+   * @example ['h1', 'a[href]', '.content']
+   */
   selectors: string[];
+  /**
+   * Fetch options
+   * @example { headers: { 'User-Agent': 'Mozilla/5.0' } }
+   */
   requestOptions?: RequestInit | (() => Promise<RequestInit>);
 }
 

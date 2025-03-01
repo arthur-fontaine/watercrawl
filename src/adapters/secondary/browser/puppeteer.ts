@@ -1,6 +1,10 @@
 import * as puppeteer from 'puppeteer-core';
 
 interface PuppeteerOptions {
+  /**
+   * Browser WebSocket endpoint
+   * @example 'ws://localhost:9222/devtools/browser/1234'
+   */
   browserWSEndpoint: string;
 }
 

@@ -1,4 +1,8 @@
 interface FetchOptions {
+  /**
+   * Fetch options
+   * @example { headers: { 'User-Agent': 'Mozilla/5.0' } }
+   */
   requestOptions?: RequestInit | (() => Promise<RequestInit>);
 }
 
