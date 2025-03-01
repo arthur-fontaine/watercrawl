@@ -211,6 +211,38 @@ Crawl and scrape a website with Watercrawl in **<u>5 minutes</u>**!
   })
   ```
 
+### 🎨 Implement your owns
+
+- [Browser](/src/domain/ports/browser.d.ts)
+  
+  ```ts
+  import type { Browser } from "watercrawl"
+
+  export class MyBrowser implements Browser {
+    // Implement the methods
+  }
+  ```
+
+- [AI](/src/domain/ports/ai.d.ts)
+  
+  ```ts
+  import type { AI } from "watercrawl"
+
+  export class MyAI implements AI {
+    // Implement the methods
+  }
+  ```
+
+- [Queue](/src/domain/ports/queue.d.ts)
+  
+  ```ts
+  import type { Queue } from "watercrawl"
+
+  export class MyQueue<T> implements Queue<T> {
+    // Implement the methods
+  }
+  ```
+
 ## 💡 Tips
 
 - Add `.describe('A description')` to your schema properties. This will help AI models understand what information it should get from the page.
