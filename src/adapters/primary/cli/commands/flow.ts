@@ -27,8 +27,7 @@ export const flowCommand = createCommand('flow')
       }),
       queue: flowModule.queue ?? new BullQueue({
         name: config.queue.name,
-        redisHost: config.queue.redisHost,
-        redisPort: config.queue.redisPort,
+        redis: config.queue.redis,
       }),
     })
   })

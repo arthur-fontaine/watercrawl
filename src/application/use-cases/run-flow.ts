@@ -15,17 +15,29 @@ export interface FlowOptions<T extends z.AnyZodObject> {
 }
 
 export async function runFlow<T extends z.AnyZodObject>(options: FlowOptions<T>) {
+  const alreadyProcessed = new Set<string>();
+
   options.queue.process(async (job) => {
     const url = job.url;
+
     const data = await scrapeURL(url, {
       ai: options.ai,
       browser: options.browser,
       schema: zodToOpenAIStructuredOutput(options.schema),
     });
+    alreadyProcessed.add(url);
+
     const parsed = options.schema.parse(data);
+
     options.then(parsed, (...urls) => {
-      urls.forEach((url) => options.queue.add({ url }));
+      urls.forEach((url) => {
+        if (!alreadyProcessed.has(url)) {
+          options.queue.add({ url });
+        }
+      });
     });
+
+    return parsed;
   });
 
   options.queue.onFailed((job, error) => {
