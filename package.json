@@ -30,11 +30,14 @@
     "@bull-board/api": "^6.7.10",
     "@bull-board/hono": "^6.7.10",
     "@commander-js/extra-typings": "^13.1.0",
+    "@standard-schema/spec": "^1.0.0",
+    "@valibot/to-json-schema": "^1.0.0-rc.0",
     "bull": "^4.16.5",
     "commander": "^13.1.0",
     "happy-dom": "^17.1.8",
     "hono": "^4.7.2",
     "puppeteer-core": "^24.2.1",
-    "zod": "^3.24.2"
+    "xsschema": "^0.1.3",
+    "zod-to-json-schema": "^3.24.4"
   }
 }

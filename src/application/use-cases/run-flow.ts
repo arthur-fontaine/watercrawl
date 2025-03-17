@@ -1,14 +1,16 @@
-import type { z } from "zod";
 import { scrapeURL } from "./scrap-url";
-import { zodToOpenAIStructuredOutput } from "../services/zod-to-openai-structured-output";
+import type { StandardSchemaV1 } from "@standard-schema/spec";
+import { toJsonSchema } from "xsschema";
+import { SchemaParsingError } from "../../domain/errors/schema-parsing-error";
 
-export interface FlowOptions<T extends z.AnyZodObject> {
+export interface FlowOptions<I, O> {
   // scrap specific options
   ai: AI;
-  schema: T;
+  schema: StandardSchemaV1<I, O>;
+  schemaName?: string;
   browser: Browser;
   // flow specific options
-  queue: Queue<{ url: string; retryRemaining?: number }>;
+  queue: Queue<{ url: string; retryRemaining?: number }, O>;
   /**
    * URL to start the flow
    * @example "https://example.com"
@@ -17,15 +19,19 @@ export interface FlowOptions<T extends z.AnyZodObject> {
   /**
    * Function to run after scraping the URL. Use this function to save the data to a database and add more URLs to the queue.
    */
-  then: (data: z.infer<T>, addToQueue: (...urls: string[]) => void) => void;
+  then: (data: O, addToQueue: (...urls: string[]) => void) => void;
   /**
    * Unique identifier for the flow
    */
   id?: string;
 }
 
-export async function runFlow<T extends z.AnyZodObject>(options: FlowOptions<T>) {
+/**
+ * Scrape a URL and optionally queue more URLs to be scraped.
+ */
+export async function runFlow<I, O>(options: FlowOptions<I, O>) {
   const alreadyProcessed = new Set<string>();
+  const jsonSchema = await toJsonSchema(options.schema);
 
   options.queue.process(async (job) => {
     const url = job.url;
@@ -33,13 +39,24 @@ export async function runFlow<T extends z.AnyZodObject>(options: FlowOptions<T>)
     const data = await scrapeURL(url, {
       ai: options.ai,
       browser: options.browser,
-      schema: zodToOpenAIStructuredOutput(options.schema),
+      schema: {
+        type: "json_schema",
+        json_schema: {
+          name: jsonSchema.title ?? jsonSchema.$ref ?? options.schemaName ?? "object",
+          schema: jsonSchema,
+          strict: true,
+        },
+      },
     });
     alreadyProcessed.add(url);
 
-    const parsed = options.schema.parse(data);
+    const parsed = await options.schema["~standard"].validate(data);
 
-    options.then(parsed, (...urls) => {
+    if (parsed.issues !== undefined) {
+      throw new SchemaParsingError(parsed.issues);
+    }
+
+    options.then(parsed.value, (...urls) => {
       urls.forEach((url) => {
         if (!alreadyProcessed.has(url)) {
           options.queue.add({ url });
@@ -47,7 +64,7 @@ export async function runFlow<T extends z.AnyZodObject>(options: FlowOptions<T>)
       });
     });
 
-    return parsed;
+    return parsed.value;
   });
 
   options.queue.onFailed((job, error) => {

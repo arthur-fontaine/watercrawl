@@ -1,9 +1,21 @@
+import type { JsonSchema } from "xsschema";
+
 export interface ScrapperOptions {
   ai: AI;
-  schema: OpenAIStructuredOutput;
+  schema: {
+    type: 'json_schema';
+    json_schema: {
+      name: string;
+      schema: JsonSchema;
+      strict: boolean;
+    };
+  };
   browser: Browser;
 }
 
+/**
+ * Low-level function to scrape a URL using AI and a JSON schema.
+ */
 export async function scrapeURL(url: string, options: ScrapperOptions) {
   const pageInfos = await options.browser.getPageInfos(url);
   return await scrapePageByAI(options, pageInfos);
