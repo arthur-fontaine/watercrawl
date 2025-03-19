@@ -1,4 +1,5 @@
 import { select, text } from "@clack/prompts";
+import * as picocolors from "picocolors";
 
 interface Type {
   getClackChoice(): {
@@ -63,7 +64,7 @@ class ListType implements Type {
   async nextStep(promptType: (path: string[]) => Promise<Type>, path: string[]) {
     const newPath = [...path, '0'];
     const type = await promptType(newPath);
-    return `z.array(${await type.nextStep(promptType, newPath)})`;
+    return `z.array(\n${'  '.repeat(path.length + 2)}${await type.nextStep(promptType, newPath)},\n${'  '.repeat(path.length + 1)})`;
   }
 }
 
@@ -80,7 +81,7 @@ class ObjectType implements Type {
     let schema = 'z.object({\n';
     do {
       const propertyName = await text({
-        message: `${getPromptPrefix(path)}What is the property name? (Press Enter if you're done)`,
+        message: `${getPromptPrefix([...path])}${path.length > 0 ? `Under ${picocolors.magenta(formatPath(path))}, what` : 'What'} do you want to name the property? (Press Enter if you're done)`,
         placeholder: 'e.g. "name"',
         validate(value) {
           if (value.includes(' ')) return 'The property name cannot contain spaces.';
@@ -109,12 +110,12 @@ const types = [
 ];
 
 function getPromptPrefix(path: string[]) {
-  return path.length === 0 ? '' : `\`${path.join('.')}\` `;
+  return ''
 }
 
 async function promptType(path: string[]): Promise<Type> {
   const type = await select({
-    message: `${getPromptPrefix(path)}What type is this property?`,
+    message: `${getPromptPrefix(path)}What type is ${picocolors.magenta(formatPath(path))}?`,
     options: types.map(type => new type().getClackChoice()),
   });
 
@@ -123,6 +124,10 @@ async function promptType(path: string[]): Promise<Type> {
   }
 
   return type;
+}
+
+function formatPath(path: string[]) {
+  return path.join('.').replaceAll(".0", "[].element");
 }
 
 export async function createZodSchemaWithClack() {
