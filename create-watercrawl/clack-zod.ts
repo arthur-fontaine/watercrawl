@@ -19,8 +19,10 @@ class StringType implements Type {
     };
   }
 
-  async nextStep() {
-    return 'z.string()';
+  async nextStep(_promptType: (path: string[]) => Promise<Type>, path: string[]) {
+    const description = await promptDescription(path);
+    const zodDescription = description ? `.describe(${JSON.stringify(description)})` : '';
+    return `z.string()${zodDescription}`;
   }
 }
 
@@ -33,8 +35,10 @@ class NumberType implements Type {
     };
   }
 
-  async nextStep() {
-    return 'z.number()';
+  async nextStep(_promptType: (path: string[]) => Promise<Type>, path: string[]) {
+    const description = await promptDescription(path);
+    const zodDescription = description ? `.describe(${JSON.stringify(description)})` : '';
+    return `z.number()${zodDescription}`;
   }
 }
 
@@ -47,8 +51,10 @@ class BooleanType implements Type {
     };
   }
 
-  async nextStep() {
-    return 'z.boolean()';
+  async nextStep(_promptType: (path: string[]) => Promise<Type>, path: string[]) {
+    const description = await promptDescription(path);
+    const zodDescription = description ? `.describe(${JSON.stringify(description)})` : '';
+    return `z.boolean()${zodDescription}`;
   }
 }
 
@@ -63,8 +69,10 @@ class ListType implements Type {
 
   async nextStep(promptType: (path: string[]) => Promise<Type>, path: string[]) {
     const newPath = [...path, '0'];
+    const description = await promptDescription(newPath);
+    const zodDescription = description ? `.describe(${JSON.stringify(description)})` : '';
     const type = await promptType(newPath);
-    return `z.array(\n${'  '.repeat(path.length + 2)}${await type.nextStep(promptType, newPath)},\n${'  '.repeat(path.length + 1)})`;
+    return `z.array(\n${'  '.repeat(path.length + 2)}${await type.nextStep(promptType, newPath)},\n${'  '.repeat(path.length + 1)})${zodDescription}`;
   }
 }
 
@@ -78,6 +86,9 @@ class ObjectType implements Type {
   }
 
   async nextStep(promptType: (path: string[]) => Promise<Type>, path: string[]) {
+    const description = path.length === 0 ? '' : await promptDescription(path);
+    const zodDescription = description ? `.describe(${JSON.stringify(description)})` : '';
+
     let schema = 'z.object({\n';
     do {
       const propertyName = await text({
@@ -96,7 +107,7 @@ class ObjectType implements Type {
       const type = await promptType(newPath);
       schema += `${indentation}${propertyName}: ${await type.nextStep(promptType, newPath)},\n`;
     } while (true);
-    schema += `${'  '.repeat(path.length + 1)}})`;
+    schema += `${'  '.repeat(path.length + 1)}})${zodDescription}`;
     return schema;
   }
 }
@@ -124,6 +135,19 @@ async function promptType(path: string[]): Promise<Type> {
   }
 
   return type;
+}
+
+async function promptDescription(path: string[]) {
+  const description = await text({
+    message: `${getPromptPrefix(path)}How would you describe ${picocolors.magenta(formatPath(path))}? This will be used as an hint for the AI.`,
+    placeholder: 'e.g. "The name of the user", "The price of the product in USD"',
+  });
+
+  if (typeof description === 'symbol') {
+    return '';
+  }
+
+  return description;
 }
 
 function formatPath(path: string[]) {

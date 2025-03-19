@@ -23,7 +23,7 @@ export default createFlow({
   schemaName: "{{ schemaName }}",
   schema:
     @if(typeof schema !== 'undefined')~
- {{ schema }}
+ {{ html.safe(schema) }}
 @else~
   @if(schemaLib === 'zod')~
  z.object({
