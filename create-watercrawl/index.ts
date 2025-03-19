@@ -92,6 +92,7 @@ if (features.includes('flow')) {
         value: 'console',
       },
     ],
+    required: false,
   });
 
   await writeTemplate('flow', {

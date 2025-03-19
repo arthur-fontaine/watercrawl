@@ -17,7 +17,8 @@ import { appendFileSync } from 'fs';
 const mongoClient = new MongoClient(process.env.MONGO_URL);
 await mongoClient.connect();
 const db = mongoClient.db(process.env.MONGO_DB);
-@end
+
+@end~
 
 export default createFlow({
   schemaName: "{{ schemaName }}",
@@ -47,23 +48,25 @@ export default createFlow({
     // Add the next URLs to the queue.
     addToQueue(...urls);
 
+
     @if(dataTreatment.length === 0)~
     // TODO: Do something with the data.
+
     @end~
     @if(dataTreatment.includes('console'))~
-
     console.log(data);
+
     @end~
     @if(dataTreatment.includes('mongodb'))~
-
     // Save the data to MongoDB.
     const collection = db.collection('{{ schemaName }}');
     await collection.insertOne(data);
+
     @end~
     @if(dataTreatment.includes('jsonl'))~
-
     // Save the data to a JSONL file.
     appendFileSync('{{ schemaName }}.jsonl', JSON.stringify(data) + '\n');
+
     @end~
   },
 });
