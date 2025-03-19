@@ -10,6 +10,9 @@ import * as v from 'valibot';
 export default createFlow({
   schemaName: "{{ schemaName }}",
   schema:
+    @if(typeof schema !== 'undefined')~
+ {{ schema }}
+@else~
   @if(schemaLib === 'zod')~
  z.object({
     urls: z.array(z.string()).describe('The next URLs to crawl.'),
@@ -26,6 +29,7 @@ export default createFlow({
     // TODO: Add your schema here.
   })
   @end~
+@end~
 ,
   then: async ({ urls, ...data }, addToQueue) => {
     // Add the next URLs to the queue.

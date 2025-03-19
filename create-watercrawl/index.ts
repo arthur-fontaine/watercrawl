@@ -1,6 +1,7 @@
 import { Edge } from 'edge.js'
-import { intro, multiselect, outro, select, text } from '@clack/prompts';
+import { confirm, intro, multiselect, outro, select, text } from '@clack/prompts';
 import path from "node:path";
+import { createZodSchemaWithClack } from './clack-zod';
 
 intro(`create-watercrawl`);
 
@@ -55,14 +56,32 @@ if (features.includes('flow')) {
         value: 'valibot',
       },
     ],
-    initialValue: 'zod',
+    initialValue: 'zod' as const,
   });
 
   if (typeof schemaLib === 'symbol') {
     throw new Error(schemaLib.description);
   }
 
-  await writeTemplate('flow', { schemaName, schemaLib });
+  let flowWritten = false;
+
+  if (schemaLib === 'zod') {
+    const shouldDefineSchemaInteractively = await confirm({
+      message: 'Do you want to interactively define the schema?',
+      initialValue: true,
+    });
+
+    if (shouldDefineSchemaInteractively === true) {
+      const schema = await createZodSchemaWithClack();
+
+      await writeTemplate('flow', { schemaName, schemaLib, schema });
+      flowWritten = true;
+    }
+  }
+
+  if (!flowWritten) {
+    await writeTemplate('flow', { schemaName, schemaLib });
+  }
 }
 
 if (features.includes('docker')) {
