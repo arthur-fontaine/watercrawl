@@ -1,0 +1,36 @@
+import { createFlow } from 'watercrawl';
+@if(schemaLib === 'zod')
+import { z } from 'zod';
+@elseif(schemaLib === 'arktype')
+import { type } from "arktype";
+@elseif(schemaLib === 'valibot')
+import * as v from 'valibot';
+@end
+
+export default createFlow({
+  schemaName: "{{ schemaName }}",
+  schema:
+  @if(schemaLib === 'zod')~
+ z.object({
+    urls: z.array(z.string()).describe('The next URLs to crawl.'),
+    // TODO: Add your schema here.
+  })
+  @elseif(schemaLib === 'arktype')~
+ type({
+    urls: type('string[]').describe('The next URLs to crawl.'),
+    // TODO: Add your schema here.
+  })
+  @elseif(schemaLib === 'valibot')~
+ v.object({
+    urls: v.array(v.string()).describe('The next URLs to crawl.'),
+    // TODO: Add your schema here.
+  })
+  @end~
+,
+  then: async ({ urls, ...data }, addToQueue) => {
+    // Add the next URLs to the queue.
+    addToQueue(...urls);
+
+    // TODO: Do something with the data.
+  },
+});

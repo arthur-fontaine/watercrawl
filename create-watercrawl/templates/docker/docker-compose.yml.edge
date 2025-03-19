@@ -1,0 +1,18 @@
+services:
+  - name: watercrawl
+    build:
+      context: .
+      dockerfile: watercrawl.dockerfile
+    volumes:
+      - .:/app
+    network_mode: host
+  
+  - name: redis
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:
