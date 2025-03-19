@@ -63,7 +63,7 @@ if (features.includes('flow')) {
     throw new Error(schemaLib.description);
   }
 
-  let flowWritten = false;
+  let schema: string | undefined;
 
   if (schemaLib === 'zod') {
     const shouldDefineSchemaInteractively = await confirm({
@@ -72,16 +72,34 @@ if (features.includes('flow')) {
     });
 
     if (shouldDefineSchemaInteractively === true) {
-      const schema = await createZodSchemaWithClack();
-
-      await writeTemplate('flow', { schemaName, schemaLib, schema });
-      flowWritten = true;
+      schema = await createZodSchemaWithClack();
     }
   }
 
-  if (!flowWritten) {
-    await writeTemplate('flow', { schemaName, schemaLib });
-  }
+  const dataTreatment = await multiselect({
+    message: 'What do you want to do with the data? (You can also choose none)',
+    options: [
+      {
+        label: 'Save it to a MongoDB database',
+        value: 'mongodb',
+      },
+      {
+        label: 'Save it to a JSONL file',
+        value: 'jsonl',
+      },
+      {
+        label: 'Log it to the console',
+        value: 'console',
+      },
+    ],
+  });
+
+  await writeTemplate('flow', {
+    schemaName,
+    schemaLib,
+    schema,
+    dataTreatment,
+  });
 }
 
 if (features.includes('docker')) {
